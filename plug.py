@@ -1,31 +1,24 @@
-import json
-import platform
-import random
-import time
-import hashlib
-from urllib import parse
-import psutil
-import requests
 import api
-import threading
-import re
+
 
 api: api = None
 
 
-def init(init_api):
+def init(init_api: api):
     """插件初始化函数
     :param init_api:
     :return:
     """
-    global api
+    global api, root, tran, init_time
     if api is None:
         api = init_api
 
 
 def main(event):
+    global root, temp_robot_id, temp_project_name, qq_list, save_status, init_time, au
     qq_id: str = event['qq_id']  # 用于判定哪个QQ接收到该消息
-    type: int = event['type']  # 接收到消息类型，该类型可在常量表中查询具体定义，此处仅列举： -1 未定义事件 0,在线状态临时会话 1,好友信息 2,群信息 3,讨论组信息 4,群临时会话 5,讨论组临时会话 6,财付通转账 7,好友验证回复会话
+    type: int = event['type']  # 接收到消息类型，该类型可在常量表中查询具体定义，
+    # 此处仅列举： -1 未定义事件 0,在线状态临时会话 1,好友信息 2,群信息 3,讨论组信息 4,群临时会话 5,讨论组临时会话 6,财付通转账 7,好友验证回复会话
     sub_type: int = event['sub_type']  # 此参数在不同ER_下，有不同的定义，暂定：接收财付通转账时 1待确认收款 0为已收款    有人请求入群时，不良成员这里为1
     source: str = event['source']  # 此消息的来源，如：群号、讨论组ID、临时会话QQ、好友QQ等
     from_obj: str = event['from_obj']  # 主动发送这条消息的QQ，踢人时为踢人管理员QQ
@@ -35,10 +28,3 @@ def main(event):
     msg_id: str = event['msg_id']  # 此参数暂定用于消息撤回
     seq: str = event['seq']  # UDP收到的原始信息，特殊情况下会返回JSON结构（入群事件时，这里为该事件seq）【原始消息会被阉割 这里可以看做就是seq】
     pointer: int = event['pointer']  # 此参数用于插件加载拒绝理由  【无用】
-
-    # 打印收到的消息
-    print("【%s】 【%s】:%s" % (source, from_obj, msg.replace("\r\n", "")))
-
-    # 如果消息类型是群 且 消息由我本人发出 则 复读
-    if type == 2 and from_obj == '31521424':
-        api.reply(msg)

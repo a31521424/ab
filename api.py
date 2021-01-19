@@ -12,26 +12,34 @@ def init(socket):
 
 
 def reply(msg, bubble_id=-1):
+    """直接回复
+    :param msg:
+    :param bubble_id:
+    :return:
+    """
     global info
     if info is not None:
-        sendmsg(info['qq_id'], info['type'], info['source'], info['to_obj'], msg, bubble_id)
+        if info['type'] == 1:
+            sendmsg(info['qq_id'], info['type'], "", info['source'], msg, bubble_id)
+        elif info['type'] == 2:
+            sendmsg(info['qq_id'], info['type'], info['source'], info['to_obj'], msg, bubble_id)
 
 
 def setstatus(content):
     global info
     try:
-        info = json.loads(content)
+        info = json.loads(content.replace(r'\r\n', r'\n'))
     except Exception as e:
-        print(e)
-        print(content)
-    return info
+        print("--" + content)
+    finally:
+        return info
 
 
-def sendmsg(qq_id, type, to_group, to_obj, msg, bubble_id):
+def sendmsg(qq_id, type, to_group, to_obj, msg, bubble_id=-1):
     """ 发送普通文本消息
 	:param qq_id: 响应QQ 文本型 机器人QQ
 	:param type: 信息类型 整数型 0在线临时会话 1好友 2群 3讨论组 4群临时会话 5讨论组临时会话 7好友验证回复会话 8群匿名消息 ）
-	:param to_group: 收信对象群_讨论组 文本型 发送群匿名消息、群信息、讨论组、群或讨论组临时会话信息时填写，如发送对象为好友或信息类型是0时可空
+	:param to_group: 收信对象群_讨论组 文本型 发送群匿名消息、群信息、讨论组、群或讨论组临时会话信息时填写，发送好友信息请传入空字符串
 	:param to_obj: 收信QQ 文本型 收信对象QQ
 	:param msg: 内容 文本型 信息内容
 	:param bubble_id: 气泡ID 整数型 -1为随机气泡
@@ -875,7 +883,7 @@ def getonlinelist():
     global message_socket
     order = {'func': "getonlinelist"}
     message_id = message_socket.send_message(json.dumps(order, ensure_ascii=False))
-    return message_socket.accept_message(message_id)
+    return message_socket.accept_message(message_id,)
 
 
 def getofflinelist():
