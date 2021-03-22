@@ -1,11 +1,8 @@
-import threading
-import re
+import json
 import socket_duplex
-import plug
-import time
-import api
+import threading
 import traceback
-
+import time
 
 def get_message():
     """
@@ -48,4 +45,4 @@ if __name__ == '__main__':
             time.sleep(60)
     except Exception as e:
         with open('log.txt', 'a+') as w:
-            w.write("时间:%s\n错误:%s \n位置:%s\n" %(time.strftime("%Y-%m-%d %H:%M:%S"), str(e), traceback.format_exc()))
+            w.write("时间:%s\n错误:%s \n位置:%s\n" % (time.strftime("%Y-%m-%d %H:%M:%S"), str(e), traceback.format_exc()))

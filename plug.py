@@ -1,21 +1,10 @@
 import api
 
-
-api: api = None
-
-
 def init(init_api: api):
-    """插件初始化函数
-    :param init_api:
-    :return:
-    """
-    global api, root, tran, init_time
-    if api is None:
-        api = init_api
+    pass
 
 
 def main(event):
-    global root, temp_robot_id, temp_project_name, qq_list, save_status, init_time, au
     qq_id: str = event['qq_id']  # 用于判定哪个QQ接收到该消息
     type: int = event['type']  # 接收到消息类型，该类型可在常量表中查询具体定义，
     # 此处仅列举： -1 未定义事件 0,在线状态临时会话 1,好友信息 2,群信息 3,讨论组信息 4,群临时会话 5,讨论组临时会话 6,财付通转账 7,好友验证回复会话
@@ -28,3 +17,5 @@ def main(event):
     msg_id: str = event['msg_id']  # 此参数暂定用于消息撤回
     seq: str = event['seq']  # UDP收到的原始信息，特殊情况下会返回JSON结构（入群事件时，这里为该事件seq）【原始消息会被阉割 这里可以看做就是seq】
     pointer: int = event['pointer']  # 此参数用于插件加载拒绝理由  【无用】
+
+    

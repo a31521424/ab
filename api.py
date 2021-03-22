@@ -1,5 +1,6 @@
 import json
 import socket_duplex
+import traceback
 
 message_socket: socket_duplex.Socket = None
 info = None
@@ -30,7 +31,9 @@ def setstatus(content):
     try:
         info = json.loads(content.replace(r'\r\n', r'\n'))
     except Exception as e:
-        print("--" + content)
+        with open('log.txt', 'a+') as w:
+            w.write(
+                "时间:%s\n错误:%s \n位置:%s\n" % (time.strftime("%Y-%m-%d %H:%M:%S"), str(e), traceback.format_exc()))
     finally:
         return info
 
